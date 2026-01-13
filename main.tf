@@ -50,6 +50,18 @@ resource "aws_eks_cluster" "this" {
 ######################################
 # EKS Managed Node Group
 ######################################
+resource "aws_launch_template" "eks_nodes" {
+  name_prefix = "eks-nodes-"
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
+
+  key_name = "kilinov-keypair"
+}
+
 resource "aws_eks_node_group" "free_tier_nodes" {
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = "free-tier-nodes"
@@ -64,12 +76,17 @@ resource "aws_eks_node_group" "free_tier_nodes" {
     max_size     = 2
   }
 
-  remote_access {
-    ec2_ssh_key               = "kilinov-keypair"
-    source_security_group_ids = []  # empty = allow from anywhere (0.0.0.0/0)
+  launch_template {
+    id      = aws_launch_template.eks_nodes.id
+    version = aws_launch_template.eks_nodes.latest_version
   }
 
   depends_on = [
     aws_eks_cluster.this
   ]
+}
+
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name = aws_eks_cluster.this.name
+  addon_name   = "aws-ebs-csi-driver"
 }
