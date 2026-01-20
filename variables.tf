@@ -8,6 +8,10 @@ variable "vpc_id" {
 }
 
 variable "subnet_ids" {
-  description = "List of subnet IDs for EKS cluster and node group"
-  type        = list(string)
+  description = "Comma-separated list of subnet IDs for EKS cluster and node group"
+  type        = string
+}
+
+locals {
+  subnet_list = split(",", var.subnet_ids)
 }
