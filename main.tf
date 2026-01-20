@@ -7,7 +7,7 @@ resource "aws_eks_cluster" "this" {
   version  = "1.34"
 
   vpc_config {
-    subnet_ids = locals.subnet_list
+    subnet_ids = local.subnet_list
   }
 
   # ✅ REQUIRED FOR A LABS PORTAL
@@ -40,7 +40,7 @@ resource "aws_eks_node_group" "free_tier_nodes" {
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = "free-tier-nodes"
   node_role_arn  = aws_iam_role.eks_node_role.arn
-  subnet_ids     = locals.subnet_list
+  subnet_ids     = local.subnet_list
 
   instance_types = ["t3.medium"]
 

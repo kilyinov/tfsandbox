@@ -5,7 +5,3 @@ output "cluster_name" {
 output "cluster_endpoint" {
   value = aws_eks_cluster.this.endpoint
 }
-
-output "subnets" {
-  value = module.vpc.public_subnets
-}
