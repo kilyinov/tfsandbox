@@ -51,10 +51,10 @@ resource "aws_eks_node_group" "free_tier_nodes" {
     max_size     = 2
   }
 
-  launch_template {
-    id      = aws_launch_template.eks_nodes.id
-    version = 1
-  }
+#  launch_template {
+#    id      = aws_launch_template.eks_nodes.id
+#    version = 1
+#  }
 
   depends_on = [
     aws_eks_cluster.this
