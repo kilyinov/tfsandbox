@@ -24,17 +24,9 @@ resource "aws_eks_cluster" "this" {
 ######################################
 # EKS Managed Node Group
 ######################################
-resource "aws_iam_instance_profile" "eks_node" {
-  name = "eks-node-instance-profile"
-  role = aws_iam_role.eks_node_role.name
-}
 
 resource "aws_launch_template" "eks_nodes" {
   name_prefix = "eks-nodes-"
-
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.eks_node.arn
-  }
 
   metadata_options {
     http_endpoint               = "enabled"
