@@ -53,7 +53,6 @@ resource "aws_eks_node_group" "free_tier_nodes" {
 
   launch_template {
     id      = aws_launch_template.eks_nodes.id
-    version = aws_launch_template.eks_nodes.latest_version
   }
 
   depends_on = [
