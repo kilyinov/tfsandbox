@@ -51,17 +51,24 @@ resource "aws_eks_node_group" "free_tier_nodes" {
     max_size     = 2
   }
 
-#  launch_template {
-#    id      = aws_launch_template.eks_nodes.id
-#    version = 1
-#  }
 
   depends_on = [
     aws_eks_cluster.this
   ]
 }
 
-#resource "aws_eks_addon" "ebs_csi" {
-#  cluster_name = aws_eks_cluster.this.name
-#  addon_name   = "aws-ebs-csi-driver"
-#}
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name             = aws_eks_cluster.this.name
+  addon_name               = "aws-ebs-csi-driver"
+  service_account_role_arn = aws_iam_role.ebs_csi_role.arn
+}
+
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
